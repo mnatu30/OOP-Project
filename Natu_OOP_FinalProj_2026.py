@@ -124,6 +124,10 @@ class DNA(Seq):
         self.sequence = re.sub('[^ATGCU]','N',sequence) 
         self.geneid=geneid
  
+    #additional operator overload to get length of sequence
+    def __len__(self):
+        return len(self.sequence)
+    
     def analysis(self):
         gc=len(re.findall('G',self.sequence) + re.findall('C',self.sequence))
         return gc
@@ -158,8 +162,15 @@ class DNA(Seq):
             frames.append(reverse_frame)
             counter2+=3
         return frames
+    #additional method to calculate gc percentage
+    def gc_content(self):
+        gc=len(re.findall('G',self.sequence) + re.findall('C',self.sequence))
+        return "GC content of the sequence is " + str(gc/len(self.sequence)*100) + "%"
+    
 
 #s=DNA("AAACCC", "BRCA1", "Human", "12345")
+#print(s.gc_content())
+#print(len(s))
 #print(s.six_frames())
 #print(s.reverse_complement())
 #print(s.make_kmers())
