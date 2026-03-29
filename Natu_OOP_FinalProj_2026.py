@@ -166,9 +166,29 @@ class DNA(Seq):
     def gc_content(self):
         gc=len(re.findall('G',self.sequence) + re.findall('C',self.sequence))
         return "GC content of the sequence is " + str(gc/len(self.sequence)*100) + "%"
+    #additional method to find repeats
+    def repeat_finder(self, repeat_length):
+        repeated_sequences=[]
+        current_repeat=self.sequence[0]
+        
+        for i in range(1,len(self.sequence)):
+            if self.sequence[i] == self.sequence[i-1]:
+                current_repeat += self.sequence[i]
+                                
+            else:
+                if len(current_repeat) >= repeat_length:
+                    repeated_sequences.append(current_repeat)
+                current_repeat = self.sequence[i]
+                            
+            if len(current_repeat) >= repeat_length:
+               repeated_sequences.append(current_repeat)
     
-
-#s=DNA("AAACCC", "BRCA1", "Human", "12345")
+        return repeated_sequences
+    
+#s=DNA("AAAAACCC", "BRCA1", "Human", "12345")
+#print(s.repeat_finder(3))
+d = DNA("AAATTTGCCCCA", "BRCA1", "Homo sapiens", "gene001")
+print(d.repeat_finder(2))  # what does this give you?
 #print(s.gc_content())
 #print(len(s))
 #print(s.six_frames())
