@@ -1,66 +1,4 @@
-## RENAME this file YourLastName_OOP_FinalProject_2026.py
-
-##Assignment: Add to the constructor and methods of a parent class and child classes
-##            which inherit the base class properties. NOTE: You are not allowed
-##            to import any specialized libraries for this project (e.g., no Biopython)
-##            The idea is for you to write these methods from scratch.
-
-## Begin with the parent Seq class and the child DNA class we created in lecture below.
-## 
-
-### Seq Class
-#
-#  Constructor:
-#  (1) Use the string functions upper and strip to clean up self.sequence.
-#  (2) Add a variable self.kmers to the constructor and make it equal to an empty list.
-
-#  Methods:
-#  (1) Add a method called make_kmers that makes overlapping kmers of a given length from self.sequence
-#      appends these to self.kmers. Default kmer parameter=3.
-#  (2) Add a method called fasta that returns a fasta formatted string like this:
-#      >species gene
-#      AGATTGATAGATAGATAT
-
-
-### DNA Class: INHERITS Seq class
-#   
-#  Constructor:
-#  Use re.sub to change any non nucleotide characters in self.sequence into an 'N'.
-#      re.sub('[^ATGCU]','N',sequence) will change any character that is not a
-#      capital A, T, G, C or U into an N. (Seq already uppercases and strips.)
-
-#  Methods:
-#  (1) Add a method called print_info that is like print_record, but adds geneid and an
-#      empty space to the beginning of the string.
-#  (2) Add a method called reverse_complement that returns the reverse complement of
-#      self.sequence
-#  (3) Add a method called six_frames that returns all 6 frames of self.sequence
-#      This include the 3 forward frames, and the 3 reverse complement frames
-
-### RNA Class:  INHERITS DNA class
-#  
-#  Construtor:
-#  Use the super() function (see DNA Class example).
-#  (1) Automatically change all Ts to Us in self.sequence. 
-#  (2) Add self.codons equals to an empty list
-
-#  Methods:
-#  (1) Add make_codons which breaks the self.sequence into 3 letter codons
-#      and appends these codons to self.codons unless they are less than 3 letters long.
-#  (2) Add translate which uses the Global Variable standard_code below to
-#      translate the codons in self.codons and returns a protein sequence.
-
-### Protein Class: INHERITS Seq class
-#
-#  Construtor:
-#  Use the super() function (see DNA Class example).
-#  Use re.sub to change any non LETTER characters in self.sequence into an 'X'.
-
-#  Methods:
-#  The next 2 methods use a kyte_doolittle and the aa_mol_weights dictionaries.
-#  (2) Add total_hydro, which return the sum of the total hydrophobicity of a self.sequence
-#  (3) Add mol_weight, which returns the total molecular weight of the protein
-#      sequence assigned to the protein object. 
+#OOP Project 
 
 
 import re
@@ -180,15 +118,15 @@ class DNA(Seq):
                     repeated_sequences.append(current_repeat)
                 current_repeat = self.sequence[i]
                             
-            if len(current_repeat) >= repeat_length:
-               repeated_sequences.append(current_repeat)
+        if len(current_repeat) >= repeat_length:
+            repeated_sequences.append(current_repeat)
     
         return repeated_sequences
     
 #s=DNA("AAAAACCC", "BRCA1", "Human", "12345")
 #print(s.repeat_finder(3))
-d = DNA("AAATTTGCCCCA", "BRCA1", "Homo sapiens", "gene001")
-print(d.repeat_finder(2))  # what does this give you?
+#d = DNA("AAATTTGCCCCA", "BRCA1", "Homo sapiens", "gene001")
+#print(d.repeat_finder(3))  
 #print(s.gc_content())
 #print(len(s))
 #print(s.six_frames())
