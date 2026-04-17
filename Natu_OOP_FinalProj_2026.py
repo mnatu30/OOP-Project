@@ -44,6 +44,13 @@ class Seq:
         return self.species + " " + self.gene + ": " + self.sequence
     
     def make_kmers(self, k=3):
+        """
+        returns kmers by default k=3 if no parameter given. 
+        append kmers to list 
+        >>> seq1 = Seq("ATTAGAA","GENE007","BC")
+        >>> print(seq1.make_kmers())
+        ['ATT', 'TTA', 'TAG', 'AGA', 'GAA']
+        """
         self.kmers = []
         for i in range(len(self.sequence)-k+1):
             kmer = self.sequence[i:i+k]
@@ -65,6 +72,13 @@ class DNA(Seq):
         return len(self.sequence)
     
     def analysis(self):
+        """
+        Returns G and C count
+        >>> DNA_1 = DNA("aGGCGggggfsdsgTAATT","gene13","baco","1307")
+        >>> gc_count = DNA_1.analysis()
+        >>> print(gc_count)
+        9
+        """
         gc=len(re.findall('G',self.sequence) + re.findall('C',self.sequence))
         return gc
 
@@ -155,13 +169,22 @@ class RNA(DNA):
     #def __str__(self):
      #   self.rna_seq=self.sequence.replace("T", "U")
       #  return self.rna_seq
+    def __len__(self):
+        """
+        Length object overloader.
+        Returns the length of the sequence 
+        >>> TOY_RNA = RNA("AFTFGTT","gene1","XILO", "R12")
+        >>> print(len(TOY_RNA))
+        7
+        """
+        return len(self.sequence)
 
     def make_codons(self):
+
         for i in range(0,len(self.rna_seq),3):
             codon = self.rna_seq[i:(i+3)]
-            if len(codon) < 3:
-                break
-            self.codons.append(codon)
+            if len(codon) == 3:
+                self.codons.append(codon)
         return self.codons
        
     def translate(self):       
@@ -185,9 +208,10 @@ class RNA(DNA):
 
 class Protein(Seq):
 
-    def __init__(self, sequence, gene, species,accession,**kwargs):
+    def __init__(self, sequence, gene, species,accession,avgscore=[],**kwargs):
         super().__init__(sequence,gene,species)
         self.sequence = re.sub('[^a-zA-Z]','X',sequence).upper() 
+        self.avgscore = avgscore
 
 
 #s1=Protein("ATCGaN2", "BRCA1", "Homo sapiens","1234")    
@@ -214,12 +238,36 @@ class Protein(Seq):
         for a_acid in self.sequence:
             m_weight.append(aa_mol_weights[a_acid])
         return sum(m_weight)
+    
+    def avg_hydrophobicity(self,r_frame):
+        """
+        Returns average hydrophobicity of entered sequence and numerical r_frame.
+        Total frames is calculate by the difference of the length of sequence and reading frame(r_frame) and add 1.
+        While i is less than total frames, an amino acid length of r_frame will be created.
+        While iterate through each amino acid and use Kyte_doolittle dictionary to match scores.
+        Append scores for each amino acid to score list. 
+        The sum of the cores within the list, 'score', will then be divided by reading frame.
+        This average will be added to list self.avgscore 
+        >>> testp=Protein('VIKING','test','unknown',999)
+        >>> x = testp.avg_hydrophobicity(3)
+        >>> print(x)
+        [1.6000000000000003, 1.7, -0.9666666666666667, 0.19999999999999998]
+        """
+        i=0
+        tot_frames=((len(self.sequence) - r_frame)+1) #create the total frames that should have the same r_frame length
+        while i < tot_frames:
+            score = []
+            aa_rf = self.sequence[i:r_frame+i]#amino acid reading frame
+            for aa in aa_rf:
+                score.append(kyte_doolittle[aa])#append to the score list
+            self.avgscore.append((sum(score))/r_frame)
+            i+=1
+        return self.avgscore
 
 #s2=Protein("AMNPQ", "BRCA1", "human", 1234)
 #print(s2.mol_weight())   
 
 #x=DNA("G","tmp","m",000)
-
 
 
 doctest.testmod(verbose=True)
