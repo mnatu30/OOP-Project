@@ -31,7 +31,7 @@ aa_mol_weights={'A':89.09,'C':121.15,'D':133.1,'E':147.13,'F':165.19,
 class Seq:
 
     def __init__(self,sequence,gene,species,kmers=[]):
-        self.sequence = sequence.upper().strip()
+        self.sequence = sequence.upper().strip()     
         self.gene=gene
         self.species=species
         self.kmers=[]
@@ -57,7 +57,7 @@ class DNA(Seq):
 
     def __init__(self,sequence,gene,species,geneid,**kwargs):
         super().__init__(sequence,gene,species)
-        self.sequence = re.sub('[^ATGCU]','N',sequence) 
+        self.sequence = re.sub('[^ATGCU]','N',self.sequence) 
         self.geneid=geneid
  
     #additional operator overload to get length of sequence
@@ -90,22 +90,18 @@ class DNA(Seq):
 
     def six_frames(self):
         frames=[]
-        counter1=0
-        for i in range(0,len(self.sequence),3):
-            forward_frame = self.sequence[i:(i+3)]
-            if len(forward_frame) < 3:
-                break
-            frames.append(forward_frame)
-            counter1+=3
-        counter2=0
-        
+        for i in range(3):
+            frame = []
+            for j in range(i, len(self.sequence)-2,3):
+                frame.append(self.sequence[i:i+3])
+            frames.append(frame)
         rc=self.reverse_complement()
-        for i in range(0,len(rc),3):
-            reverse_frame = rc[i:(i+3)]
-            if len(reverse_frame) < 3:
-                break
-            frames.append(reverse_frame)
-            counter2+=3
+        for i in range(3):
+            frame = []
+            for j in range(i, len(rc)-2,3):
+                frame.append(rc[i:i+3])
+                frames.append(frame)
+
         return frames
     #additional method to calculate gc percentage
     def gc_content(self):
@@ -119,7 +115,7 @@ class DNA(Seq):
         >>> s1.repeat_finder(3)
         ['AAA', 'CCC']
 
-       """
+        """
         repeated_sequences=[]
         current_repeat=self.sequence[0]
         
@@ -172,7 +168,7 @@ class RNA(DNA):
         prot_seq=""
         prot=[]
         for codon in self.codons:
-            if standard_code[codon] == "N":
+            if "N" in codon:
                 prot.append("X")
             elif standard_code[codon] == "*":
                 break
