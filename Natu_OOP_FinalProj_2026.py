@@ -2,6 +2,7 @@
 
 
 import re
+import doctest
 
 standard_code = {
      "UUU": "F", "UUC": "F", "UUA": "L", "UUG": "L", "UCU": "S",
@@ -71,6 +72,15 @@ class DNA(Seq):
         return " " + self.geneid + " " + self.species + " " + self.gene + ": " + self.sequence        
 
     def reverse_complement(self):
+        """
+        Returns the reverse complement of the entered sequence in string format. 
+        Converts A to T, T to A, G to C, C to G, U to A. 
+        If a nucleotide is missing or unknown (denoted by N), keeps it as N.
+        >>> s2=DNA("ATGCN", "geneX", "Human", "2002")
+        >>> s2.reverse_complement()
+        'NGCAT'
+        
+        """
         reverse= self.sequence[::-1]
         replacement_dict = {"A":"T", "T":"A", "G":"C", "C": "G", "U":"A", "N":"N"}
         reverse_complement = ""
@@ -103,6 +113,13 @@ class DNA(Seq):
         return "GC content of the sequence is " + str(gc/len(self.sequence)*100) + "%"
     #additional method to find repeats
     def repeat_finder(self, repeat_length):
+        """
+        Finds repeated nucleotides of the specified lenth or longer and returns a list.
+        >>> s1=DNA("AAACCCTT", "geneA", "Mus musculus", "1001")
+        >>> s1.repeat_finder(3)
+        ['AAA', 'CCC']
+
+       """
         repeated_sequences=[]
         current_repeat=self.sequence[0]
         
@@ -180,10 +197,18 @@ class Protein(Seq):
 #s1=Protein("ATCGaN2", "BRCA1", "Homo sapiens","1234")    
 #print(s1.sequence)            
     def total_hydro(self):
+        """
+        Calculates total hydrophobicity of the protein sequence.
+        >>> s = Protein("ACWR", "gene1", "Homo sapiens", "1234")
+        >>> s.total_hydro()
+        -1.1
+        
+        """
         hydro=[]
         for amino_acid in self.sequence:
             hydro.append(kyte_doolittle[amino_acid])
         return sum(hydro)
+    
     
 #s2=Protein("AMNPQ", "BRCA1", "human", 1234)
 #print(s2.total_hydro())
@@ -201,5 +226,5 @@ class Protein(Seq):
 
 
 
-
+doctest.testmod(verbose=True)
 
