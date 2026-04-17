@@ -30,30 +30,27 @@ aa_mol_weights={'A':89.09,'C':121.15,'D':133.1,'E':147.13,'F':165.19,
 class Seq:
 
     def __init__(self,sequence,gene,species,kmers=[]):
-        self.sequence=sequence
+        self.sequence = sequence.upper().strip()
         self.gene=gene
         self.species=species
         self.kmers=[]
 
     def __str__(self):
-        self.sequence=self.sequence.upper().strip()
+        #self.sequence=self.sequence.upper().strip()
         return self.sequence
 
     def print_record(self):
         return self.species + " " + self.gene + ": " + self.sequence
     
     def make_kmers(self, k=3):
-        counter=0
-        for kmer in self.sequence:
-            kmer = self.sequence[counter:(counter+k)]
-            if len(kmer) < k:
-                break
-            self.kmers.append(kmer)
-            counter+=1
+        self.kmers = []
+        for i in range(len(self.sequence)-k+1):
+            kmer = self.sequence[i:i+k]
+            self.kmers.append(kmer)            
         return self.kmers
     
     def fasta(self):
-        print(">" + self.species + " " + self.gene + "\n" + self.sequence)
+        return(">" + self.species + " " + self.gene + "\n" + self.sequence)
 
 class DNA(Seq):
 
@@ -124,6 +121,7 @@ class DNA(Seq):
         return repeated_sequences
     
 #s=DNA("AAAAACCC", "BRCA1", "Human", "12345")
+#print(s.print_record())
 #print(s.repeat_finder(3))
 #d = DNA("AAATTTGCCCCA", "BRCA1", "Homo sapiens", "gene001")
 #print(d.repeat_finder(3))  
@@ -157,7 +155,9 @@ class RNA(DNA):
         prot_seq=""
         prot=[]
         for codon in self.codons:
-            if standard_code[codon] == "*":
+            if standard_code[codon] == "N":
+                prot.append("X")
+            elif standard_code[codon] == "*":
                 break
             else:
                 prot.append(standard_code[codon])            
